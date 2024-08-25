@@ -15,13 +15,7 @@ function Login() {
         <h2 className="text-xl">Log in with email and password</h2>
       </div>
       <form action={action} className="flex flex-col gap-3">
-        <FormInput
-          name="email"
-          required
-          type="email"
-          placeholder="Email"
-          errors={[]}
-        />
+        <FormInput name="email" required type="email" placeholder="Email" />
         <FormInput
           name="password"
           required
