@@ -1,42 +1,47 @@
 "use server";
-
-// zod import
 import { z } from "zod";
 
-function checkUsername(username: string) {
-  return !username.includes("potato");
-}
+const passwordRegex = new RegExp(
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*?[#?!@$%^&*-]).+$/
+);
 
-function checkPassword({
-  password,
-  confirm_password,
-}: {
-  password: string;
-  confirm_password: string;
-}) {
-  password === confirm_password;
-}
-
-// data object에 대한 스키마 작성 (z.object 활용)
 const formSchema = z
   .object({
     username: z
       .string({
-        invalid_type_error: "Username must be a string",
-        required_error: "Where is my username??",
+        invalid_type_error: "Username must be a string!",
+        required_error: "Where is my username???",
       })
-      .min(3, "Way too short")
-      .max(10, "That is too long")
-      .refine(checkUsername, "No potatoes allowed"),
-    email: z.string().email(),
-    password: z.string().min(10),
-    confirm_password: z.string().min(10),
+      .min(3, "Way too short!!!")
+      .max(10, "That is too looooong!")
+      //.max(10, "That is too looooong!")
+      .trim()
+      .toLowerCase()
+      .transform((username) => `🔥 ${username}`)
+      .refine(
+        (username) => !username.includes("potato"),
+        "No potatoes allowed!"
+      ),
+    email: z.string().email().toLowerCase(),
+    password: z
+      .string()
+      .min(4)
+      .regex(
+        passwordRegex,
+        "Passwords must contain at least one UPPERCASE, lowercase, number and special characters #?!@$%^&*-"
+      ),
+    confirm_password: z.string().min(4),
   })
-  .refine(checkPassword, {
-    message: "Both passwords should be the same",
-    path: ["confirm_password"],
+  .superRefine(({ password, confirm_password }, ctx) => {
+    if (password !== confirm_password) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Two passwords should be equal",
+        path: ["confirm_password"],
+      });
+    }
   });
-export async function createAccount(prevData: any, formData: FormData) {
+export async function createAccount(prevState: any, formData: FormData) {
   const data = {
     username: formData.get("username"),
     email: formData.get("email"),
@@ -45,7 +50,8 @@ export async function createAccount(prevData: any, formData: FormData) {
   };
   const result = formSchema.safeParse(data);
   if (!result.success) {
-    console.log(result.error.flatten());
     return result.error.flatten();
+  } else {
+    console.log(result.data);
   }
 }

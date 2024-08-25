@@ -5,7 +5,7 @@ interface FormButtonProps {
   text: string;
 }
 
-function FormButton({ text }: FormButtonProps) {
+function Button({ text }: FormButtonProps) {
   const { pending } = useFormStatus();
   return (
     <button
@@ -17,4 +17,4 @@ function FormButton({ text }: FormButtonProps) {
   );
 }
 
-export default FormButton;
+export default Button;

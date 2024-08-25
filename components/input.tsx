@@ -1,26 +1,22 @@
+import { InputHTMLAttributes } from "react";
+
 interface FormInputProps {
-  type: string;
-  placeholder: string;
-  required: boolean;
   errors?: string[];
-  name: string;
 }
 
-function FormInput({
-  type,
-  placeholder,
-  required,
-  errors = [],
+function Input({
   name,
-}: FormInputProps) {
+  errors = [],
+  // name과 error를 제외한 나머지 props를 한꺼번에 받기위해 rest 라는 변수에 담음
+  ...rest
+}: // FormInputProps 뿐만 아니라 input 태그의 모든 속성을 props로 받는다는 의미
+FormInputProps & InputHTMLAttributes<HTMLInputElement>) {
   return (
     <div className="flex flex-col gap-2">
       <input
         name={name}
-        type={type}
-        placeholder={placeholder}
-        required={required}
         className="bg-transparent rounded-md w-full h-10 focus:outline-none ring-2 focus:ring-4 transition-all ring-neutral-200 focus:ring-orange-500 border-none placeholder:text-neutral-400"
+        {...rest}
       />
       {errors.map((error, index) => (
         <span className="text-red-500 font-medium" key={index}>
@@ -31,4 +27,4 @@ function FormInput({
   );
 }
 
-export default FormInput;
+export default Input;
