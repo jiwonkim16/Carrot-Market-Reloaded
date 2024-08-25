@@ -1,20 +1,20 @@
+"use client";
 import FormInput from "../../components/form-input";
 import FormButton from "../../components/form-btn";
 import SocialLogin from "@/components/social-login";
+import { useFormState } from "react-dom";
+import { onSubmit } from "./actions";
 
 function Login() {
-  const onSubmit = async (formData: FormData) => {
-    "use server";
-    console.log(formData.get("email"), formData.get("password"));
-    console.log("i am server baby");
-  };
+  const [state, action] = useFormState(onSubmit, null);
+
   return (
     <div className="flex flex-col gap-10 py-8 px-6">
       <div className="flex flex-col gap-2 *:font-medium">
         <h1 className="text-2xl">안녕하세요!</h1>
         <h2 className="text-xl">Log in with email and password</h2>
       </div>
-      <form action={onSubmit} className="flex flex-col gap-3">
+      <form action={action} className="flex flex-col gap-3">
         <FormInput
           name="email"
           required
@@ -27,9 +27,9 @@ function Login() {
           required
           type="password"
           placeholder="Password"
-          errors={[]}
+          errors={state?.errors ?? []}
         />
-        <FormButton text="Login" loading={false} />
+        <FormButton text="Login" />
       </form>
       <SocialLogin />
     </div>
