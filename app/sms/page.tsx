@@ -2,10 +2,15 @@
 import Input from "../../components/input";
 import Button from "../../components/button";
 import { useFormState } from "react-dom";
-import { smsVerification } from "./actions";
+import { smsLogIn } from "./actions";
 
-function SMSLogin() {
-  const [state, trigger] = useFormState(smsVerification, null);
+const initialState = {
+  token: false,
+  error: undefined,
+};
+
+export default function SMSLogin() {
+  const [state, trigger] = useFormState(smsLogIn, initialState);
   return (
     <div className="flex flex-col gap-10 py-8 px-6">
       <div className="flex flex-col gap-2 *:font-medium">
@@ -13,17 +18,27 @@ function SMSLogin() {
         <h2 className="text-xl">Verify your phone number</h2>
       </div>
       <form action={trigger} className="flex flex-col gap-3">
-        <Input name="phone" required type="number" placeholder="Phone number" />
-        <Input
-          name="token"
-          required
-          type="number"
-          placeholder="Verification code"
-        />
-        <Button text="Verify" />
+        {state.token ? (
+          <Input
+            name="token"
+            required
+            type="number"
+            min={100000}
+            max={999999}
+            placeholder="Verification code"
+          />
+        ) : (
+          <Input
+            name="phone"
+            required
+            type="text"
+            placeholder="Phone number"
+            errors={state.error?.formErrors}
+          />
+        )}
+
+        <Button text={state.token ? "Verify Token" : "Send Verification SMS"} />
       </form>
     </div>
   );
 }
-
-export default SMSLogin;
