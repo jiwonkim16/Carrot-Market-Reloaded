@@ -29,7 +29,7 @@ function Login() {
           type="password"
           placeholder="Password"
           minLength={PASSWORD_MIN_LENGTH}
-          errors={state?.fieldErrors.passwrod}
+          errors={state?.fieldErrors.password}
         />
         <Button text="Login" />
       </form>
