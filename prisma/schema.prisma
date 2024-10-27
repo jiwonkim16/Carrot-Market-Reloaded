@@ -22,6 +22,7 @@ model User {
   created_at DateTime   @default(now()) // now() : 생성될 때의 시간을 저장
   updated_at DateTime   @updatedAt // 사용자가 수정될 때마다 prisma가 수정된 시간을 저장
   SMSToken   SMSToken[]
+  Product    Product[]
 }
 
 model SMSToken {
@@ -31,4 +32,16 @@ model SMSToken {
   updated_at DateTime @updatedAt
   user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId     Int
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  title       String
+  price       Float
+  description String
+  photo       String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
 }
